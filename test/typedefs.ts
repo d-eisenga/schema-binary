@@ -54,3 +54,14 @@ checkFieldType<readonly string[]>(F.fixedLengthArray(F.NullTerminatedString)(1))
 checkFieldType<readonly number[]>(F.fixedLengthArray(F.Uint8)(1));
 checkFieldType<readonly boolean[]>(F.lengthPrefixedArray(F.Uint8)(F.Bool));
 checkFieldType<readonly bigint[]>(F.lengthPrefixedArray(F.Uint8)(F.Uint64BE));
+
+type Struct = {
+  foo: string,
+  bar: number,
+  baz: boolean,
+};
+checkFieldType<Struct>(F.struct([
+  ['foo', F.NullTerminatedString],
+  ['bar', F.Uint8],
+  ['baz', F.Bool],
+] as const));

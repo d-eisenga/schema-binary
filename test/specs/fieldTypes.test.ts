@@ -497,3 +497,30 @@ testFieldType('lengthPrefixedArray', [
     ]
   ),
 ]);
+
+testFieldType('struct', [
+  testSet(
+    'a struct with 2 fields',
+    FieldTypes.struct([
+      ['foo', FieldTypes.NullTerminatedString],
+      ['bar', FieldTypes.Int8],
+    ]),
+    [
+      [{foo: 'abc', bar: 123}, b(97, 98, 99, 0, 123)],
+      [{foo: 'Hello :)', bar: -128}, b(72, 101, 108, 108, 111, 32, 58, 41, 0, 128)],
+    ]
+  ),
+  testSet('a nested struct', FieldTypes.struct([
+    ['foo', FieldTypes.struct([
+      ['a', FieldTypes.Bool],
+      ['b', FieldTypes.Bool],
+    ])],
+    ['bar', FieldTypes.struct([
+      ['one', FieldTypes.Int8],
+      ['two', FieldTypes.Int8],
+    ])],
+  ]), [
+    [{foo: {a: true, b: false}, bar: {one: 1, two: 2}}, b(1, 0, 1, 2)],
+    [{foo: {a: false, b: true}, bar: {one: -1, two: -2}}, b(0, 1, 255, 254)],
+  ]),
+]);

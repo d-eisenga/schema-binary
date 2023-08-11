@@ -4,7 +4,7 @@ import * as S from '@effect/schema/Schema';
 import * as constants from './constants';
 import * as Decode from './decode';
 import * as Encode from './encode';
-import {FieldType} from './types';
+import {Cast, DeepWriteable, FieldType, FieldTypeInner} from './types';
 import {pipeFieldType} from './utils';
 import * as Writer from './Writer';
 
@@ -378,4 +378,39 @@ export const lengthPrefixedArray = (
     }
   },
   schema: S.array(field.schema),
+});
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type StructEntry<A = any> = readonly [name: string, type: FieldType<A>];
+
+export type StructEntries = readonly [...StructEntry[]];
+
+type StructFromEntries<A> = (
+  DeepWriteable<A> extends [infer Key, DeepWriteable<FieldType<unknown>>][]
+    ? {[K in Cast<Key, string>]: (
+      FieldTypeInner<Extract<DeepWriteable<A>[number], [K, unknown]>[1]>
+    )}
+    : {[key in string]: unknown}
+);
+
+export const struct = <A extends StructEntries>(
+  entries: A
+): FieldType<StructFromEntries<A>> => ({
+  read: reader => {
+    const result: Record<string, unknown> = {};
+    for (const [name, field] of entries) {
+      result[name] = field.read(reader);
+    }
+    return result as StructFromEntries<A>;
+  },
+  write: (writer, value) => {
+    for (const [name, field] of entries) {
+      field.write(writer, value[name]);
+    }
+  },
+  schema: S.struct(
+    Object.fromEntries(
+      entries.map(([name, field]) => [name, field.schema])
+    )
+  ) as unknown as S.Schema<StructFromEntries<A>>,
 });
