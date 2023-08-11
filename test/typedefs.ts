@@ -38,3 +38,10 @@ checkFieldType<string>(F.fixedLengthString(1));
 checkFieldType<string>(F.lengthPrefixedString(F.Uint8));
 
 checkFieldType<boolean>(F.Bool);
+
+enum StringEnum {Foo = 'Foo', Bar = 'Bar'}
+checkFieldType<StringEnum>(F.stringEnum(F.fixedLengthString(3))(StringEnum));
+enum NumberEnum {Foo, Bar}
+checkFieldType<NumberEnum>(F.numberEnum(F.Uint8)(NumberEnum));
+enum NumberEnum2 {Foo = 1, Bar = 2}
+checkFieldType<NumberEnum2>(F.numberEnum(F.Uint8)(NumberEnum2));

@@ -295,3 +295,28 @@ export const Bool: FieldType<boolean> = pipeFieldType(
   v => v ? 1 : 0,
   S.boolean
 );
+
+export const stringEnum = (
+  stringField: FieldType<string>
+) => <A extends Record<string, string>>(
+  enumObj: A
+): FieldType<A[keyof A]> => ({
+  read: reader => stringField.read(reader) as A[keyof A],
+  write: stringField.write,
+  schema: S.enums(enumObj),
+});
+
+export const numberEnum = (
+  numberField: FieldType<number>
+) => <A extends Record<string, string | number>>(
+  enumObj: A
+): FieldType<A[keyof A]> => ({
+  read: reader => numberField.read(reader) as A[keyof A],
+  write: (writer, value) => {
+    if (typeof value !== 'number') {
+      throw new Error(`Expected number, got ${typeof value}`);
+    }
+    numberField.write(writer, value);
+  },
+  schema: S.enums(enumObj),
+});

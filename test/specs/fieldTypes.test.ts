@@ -371,3 +371,63 @@ testFieldType('Bool', [
   testSet('true', FieldTypes.Bool, [[true, b(1)]]),
   testSet('false', FieldTypes.Bool, [[false, b(0)]]),
 ]);
+
+(() => {
+  enum StringEnum1 {Foo = 'f', Bar = 'b', Baz = 'z'}
+  enum StringEnum2 {Yes = 'yes', No = 'no', Maybe = 'maybe'}
+  testFieldType('stringEnum', [
+    testSet(
+      'enums with fixed-length string values',
+      FieldTypes.stringEnum(FieldTypes.fixedLengthString(1))(StringEnum1),
+      [
+        [StringEnum1.Foo, b(102)],
+        [StringEnum1.Bar, b(98)],
+        [StringEnum1.Baz, b(122)],
+      ]
+    ),
+    testSet(
+      'enums with length-prefixed string values',
+      FieldTypes.stringEnum(FieldTypes.lengthPrefixedString(FieldTypes.Uint8))(StringEnum2),
+      [
+        [StringEnum2.Yes, b(3, 121, 101, 115)],
+        [StringEnum2.No, b(2, 110, 111)],
+        [StringEnum2.Maybe, b(5, 109, 97, 121, 98, 101)],
+      ]
+    ),
+  ]);
+})();
+
+(() => {
+  enum NumberEnum1 {Foo, Bar, Baz}
+  enum NumberEnum2 {Foo = 2, Bar = 4, Baz = 6}
+  enum NumberEnum3 {Foo = 123, Bar = 456, Baz = 789}
+  testFieldType('numberEnum', [
+    testSet(
+      'enums with automatic values',
+      FieldTypes.numberEnum(FieldTypes.Uint8)(NumberEnum1),
+      [
+        [NumberEnum1.Foo, b(0)],
+        [NumberEnum1.Bar, b(1)],
+        [NumberEnum1.Baz, b(2)],
+      ]
+    ),
+    testSet(
+      'enums with explicit values',
+      FieldTypes.numberEnum(FieldTypes.Uint8)(NumberEnum2),
+      [
+        [NumberEnum2.Foo, b(2)],
+        [NumberEnum2.Bar, b(4)],
+        [NumberEnum2.Baz, b(6)],
+      ]
+    ),
+    testSet(
+      'enums with large values',
+      FieldTypes.numberEnum(FieldTypes.Uint16LE)(NumberEnum3),
+      [
+        [NumberEnum3.Foo, b(123, 0)],
+        [NumberEnum3.Bar, b(200, 1)],
+        [NumberEnum3.Baz, b(21, 3)],
+      ]
+    ),
+  ]);
+})();
