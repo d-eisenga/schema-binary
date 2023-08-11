@@ -1,6 +1,7 @@
 const viewBuffer = new ArrayBuffer(8);
 const view = new DataView(viewBuffer);
 const arr = new Uint8Array(viewBuffer);
+const textEncoder = new TextEncoder();
 
 export const encodeUint8 = (value: number) => {
   view.setUint8(0, value);
@@ -51,3 +52,5 @@ export const encodeFloat64 = (value: number, littleEndian: boolean) => {
   view.setFloat64(0, value, littleEndian);
   return arr.slice(0, 8);
 };
+
+export const encodeText = (value: string) => textEncoder.encode(value);

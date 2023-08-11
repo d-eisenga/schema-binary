@@ -311,3 +311,58 @@ testFieldType('lengthPrefixedBytes', [
     [b(123, 234, 45), b(3, 123, 234, 45)],
   ]),
 ]);
+
+testFieldType('fixedLengthString', [
+  testSet('3 bytes ASCII', FieldTypes.fixedLengthString(3), [
+    ['abc', b(97, 98, 99)],
+    ['xyz', b(120, 121, 122)],
+  ]),
+  testSet('4 bytes UTF-8', FieldTypes.fixedLengthString(4), [
+    ['😀', b(240, 159, 152, 128)],
+    ['💀', b(240, 159, 146, 128)],
+  ]),
+]);
+
+testFieldType('lengthPrefixedString', [
+  testSet('empty string', FieldTypes.lengthPrefixedString(FieldTypes.Uint8), [['', b(0)]]),
+  testSet('ASCII', FieldTypes.lengthPrefixedString(FieldTypes.Uint8), [
+    ['abc', b(3, 97, 98, 99)],
+    ['Hello world', b(11, 72, 101, 108, 108, 111, 32, 119, 111, 114, 108, 100)],
+  ]),
+  testSet('UTF-8', FieldTypes.lengthPrefixedString(FieldTypes.Uint8), [
+    ['😀', b(4, 240, 159, 152, 128)],
+    ['سَلَام', b(12, 216, 179, 217, 142, 217, 132, 217, 142, 216, 167, 217, 133)],
+    ['👨‍👩‍👧‍👦', b(
+      25,
+      240, 159, 145, 168, // Man
+      226, 128, 141,      // Zero-width joiner
+      240, 159, 145, 169, // Woman
+      226, 128, 141,      // Zero-width joiner
+      240, 159, 145, 167, // Girl
+      226, 128, 141,      // Zero-width joiner
+      240, 159, 145, 166  // Boy
+    )],
+  ]),
+]);
+
+testFieldType('NullTerminatedString', [
+  testSet('empty string', FieldTypes.NullTerminatedString, [['', b(0)]]),
+  testSet('ASCII', FieldTypes.NullTerminatedString, [
+    ['abc', b(97, 98, 99, 0)],
+    ['Hello world', b(72, 101, 108, 108, 111, 32, 119, 111, 114, 108, 100, 0)],
+  ]),
+  testSet('UTF-8', FieldTypes.NullTerminatedString, [
+    ['😀', b(240, 159, 152, 128, 0)],
+    ['سَلَام', b(216, 179, 217, 142, 217, 132, 217, 142, 216, 167, 217, 133, 0)],
+    ['👨‍👩‍👧‍👦', b(
+      240, 159, 145, 168, // Man
+      226, 128, 141,      // Zero-width joiner
+      240, 159, 145, 169, // Woman
+      226, 128, 141,      // Zero-width joiner
+      240, 159, 145, 167, // Girl
+      226, 128, 141,      // Zero-width joiner
+      240, 159, 145, 166, // Boy
+      0
+    )],
+  ]),
+]);

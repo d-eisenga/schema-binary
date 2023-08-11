@@ -1,8 +1,10 @@
 /* eslint-disable max-lines */
 import * as S from '@effect/schema/Schema';
 import * as constants from './constants';
+import * as Decode from './decode';
 import * as Encode from './encode';
 import {FieldType} from './types';
+import {pipeFieldType} from './utils';
 import * as Writer from './Writer';
 
 const int = S.number.pipe(S.int());
@@ -254,3 +256,35 @@ export const lengthPrefixedBytes = (
   },
   schema: S.instanceOf(Uint8Array),
 });
+
+export const fixedLengthString = (
+  length: number
+): FieldType<string> => pipeFieldType(
+  fixedLengthBytes(length),
+  Decode.decodeText,
+  Encode.encodeText,
+  S.string
+);
+
+export const lengthPrefixedString = (
+  lengthField: FieldType<number>
+): FieldType<string> => pipeFieldType(
+  lengthPrefixedBytes(lengthField),
+  Decode.decodeText,
+  Encode.encodeText,
+  S.string
+);
+
+export const NullTerminatedString: FieldType<string> = {
+  read: reader => {
+    const end = reader.arr.indexOf(0, reader.pos);
+    const value = Decode.decodeText(reader.arr.slice(reader.pos, end));
+    reader.pos = end + 1;
+    return value;
+  },
+  write: (writer, value) => {
+    Writer.push(writer, Encode.encodeText(value));
+    Writer.push(writer, Encode.encodeUint8(0));
+  },
+  schema: S.string,
+};
