@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict';
 import * as Test from 'node:test';
+import * as O from '@effect/data/Option';
 import * as S from '@effect/schema/Schema';
 import * as FieldTypes from '../../lib/fieldTypes';
 import * as Reader from '../../lib/Reader';
@@ -431,3 +432,10 @@ testFieldType('Bool', [
     ),
   ]);
 })();
+
+testFieldType('optional', [
+  testSet('optional uint8', FieldTypes.optional(FieldTypes.Uint8), [
+    [O.none(), b(0)],
+    [O.some(123), b(1, 123)],
+  ]),
+]);

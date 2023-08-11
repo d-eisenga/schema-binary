@@ -1,3 +1,4 @@
+import * as O from '@effect/data/Option';
 import * as S from '@effect/schema/Schema';
 // eslint-disable-next-line import/no-unresolved
 import {expectType} from 'tsd';
@@ -45,3 +46,6 @@ enum NumberEnum {Foo, Bar}
 checkFieldType<NumberEnum>(F.numberEnum(F.Uint8)(NumberEnum));
 enum NumberEnum2 {Foo = 1, Bar = 2}
 checkFieldType<NumberEnum2>(F.numberEnum(F.Uint8)(NumberEnum2));
+
+checkFieldType<O.Option<bigint>>(F.optional(F.Uint64BE));
+checkFieldType<O.Option<boolean>>(F.optional(F.Bool));

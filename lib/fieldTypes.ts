@@ -1,4 +1,5 @@
 /* eslint-disable max-lines */
+import * as O from '@effect/data/Option';
 import * as S from '@effect/schema/Schema';
 import * as constants from './constants';
 import * as Decode from './decode';
@@ -319,4 +320,20 @@ export const numberEnum = (
     numberField.write(writer, value);
   },
   schema: S.enums(enumObj),
+});
+
+export const optional = <A>(field: FieldType<A>): FieldType<O.Option<A>> => ({
+  read: reader => {
+    const isSet = Bool.read(reader);
+    return isSet ? O.some(field.read(reader)) : O.none<A>();
+  },
+  write: (writer, value) => {
+    if (O.isSome(value)) {
+      Bool.write(writer, true);
+      field.write(writer, value.value);
+    } else {
+      Bool.write(writer, false);
+    }
+  },
+  schema: S.to(S.option(field.schema)),
 });
