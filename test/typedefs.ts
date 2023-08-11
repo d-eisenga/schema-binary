@@ -49,3 +49,8 @@ checkFieldType<NumberEnum2>(F.numberEnum(F.Uint8)(NumberEnum2));
 
 checkFieldType<O.Option<bigint>>(F.optional(F.Uint64BE));
 checkFieldType<O.Option<boolean>>(F.optional(F.Bool));
+
+checkFieldType<readonly string[]>(F.fixedLengthArray(F.NullTerminatedString)(1));
+checkFieldType<readonly number[]>(F.fixedLengthArray(F.Uint8)(1));
+checkFieldType<readonly boolean[]>(F.lengthPrefixedArray(F.Uint8)(F.Bool));
+checkFieldType<readonly bigint[]>(F.lengthPrefixedArray(F.Uint8)(F.Uint64BE));

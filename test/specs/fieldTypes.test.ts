@@ -439,3 +439,61 @@ testFieldType('optional', [
     [O.some(123), b(1, 123)],
   ]),
 ]);
+
+testFieldType('fixedLengthArray', [
+  testSet('an array of 3 uint8', FieldTypes.fixedLengthArray(FieldTypes.Uint8)(3), [
+    [[1, 2, 3], b(1, 2, 3)],
+  ]),
+  testSet(
+    'an array of 4 length-prefixed strings',
+    FieldTypes.fixedLengthArray(FieldTypes.lengthPrefixedString(FieldTypes.Uint8))(4),
+    [[['a', 'bc', 'def', 'ghji'], b(1, 97, 2, 98, 99, 3, 100, 101, 102, 4, 103, 104, 106, 105)]]
+  ),
+  testSet(
+    'an array of 2 optional uint8',
+    FieldTypes.fixedLengthArray(FieldTypes.optional(FieldTypes.Uint8))(2),
+    [[[O.some(123), O.none()], b(1, 123, 0)]]
+  ),
+]);
+
+testFieldType('lengthPrefixedArray', [
+  testSet('an array of bool', FieldTypes.lengthPrefixedArray(FieldTypes.Uint8)(FieldTypes.Bool), [
+    [[], b(0)],
+    [[true, false, true], b(3, 1, 0, 1)],
+    [[true, true, true, false, false], b(5, 1, 1, 1, 0, 0)],
+  ]),
+  testSet(
+    'an array of uint8',
+    FieldTypes.lengthPrefixedArray(FieldTypes.Uint8)(FieldTypes.Uint8),
+    [
+      [[1, 2, 3], b(3, 1, 2, 3)],
+      [[2, 4, 6, 8, 10], b(5, 2, 4, 6, 8, 10)],
+    ]
+  ),
+  testSet(
+    'a nested array',
+    FieldTypes.lengthPrefixedArray(FieldTypes.Uint8)(
+      FieldTypes.lengthPrefixedArray(FieldTypes.Uint8)(
+        FieldTypes.NullTerminatedString
+      )
+    ),
+    [
+      [[
+        ['abc', 'de'],
+        ['f', 'g', 'hi'],
+        ['jklm'],
+      ], b(
+        3,                    // Length of outer array
+        2,                    // Length of first inner array
+        97, 98, 99, 0,        // 'abc' + null terminator
+        100, 101, 0,          // 'de' + null terminator
+        3,                    // Length of second inner array
+        102, 0,               // 'f' + null terminator
+        103, 0,               // 'g' + null terminator
+        104, 105, 0,          // 'hi' + null terminator
+        1,                    // Length of third inner array
+        106, 107, 108, 109, 0 // 'jklm' + null terminator
+      )],
+    ]
+  ),
+]);

@@ -337,3 +337,45 @@ export const optional = <A>(field: FieldType<A>): FieldType<O.Option<A>> => ({
   },
   schema: S.to(S.option(field.schema)),
 });
+
+export const fixedLengthArray = <A>(
+  field: FieldType<A>
+) => (
+  length: number
+): FieldType<readonly A[]> => ({
+  read: reader => {
+    const arr: A[] = [];
+    for (let i = 0; i < length; i++) {
+      arr.push(field.read(reader));
+    }
+    return arr;
+  },
+  write: (writer, arr) => {
+    for (let i = 0; i < length; i++) {
+      field.write(writer, arr[i]);
+    }
+  },
+  schema: S.array(field.schema),
+});
+
+export const lengthPrefixedArray = (
+  lengthField: FieldType<number>
+) => <A>(
+  field: FieldType<A>
+): FieldType<readonly A[]> => ({
+  read: reader => {
+    const length = lengthField.read(reader);
+    const arr: A[] = [];
+    for (let i = 0; i < length; i++) {
+      arr.push(field.read(reader));
+    }
+    return arr;
+  },
+  write: (writer, arr) => {
+    lengthField.write(writer, arr.length);
+    for (let i = 0; i < arr.length; i++) {
+      field.write(writer, arr[i]);
+    }
+  },
+  schema: S.array(field.schema),
+});
