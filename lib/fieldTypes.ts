@@ -288,3 +288,10 @@ export const NullTerminatedString: FieldType<string> = {
   },
   schema: S.string,
 };
+
+export const Bool: FieldType<boolean> = pipeFieldType(
+  Uint8,
+  v => v === 1,
+  v => v ? 1 : 0,
+  S.boolean
+);

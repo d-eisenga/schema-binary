@@ -36,3 +36,5 @@ checkFieldType<Uint8Array>(F.lengthPrefixedBytes(F.Uint8));
 checkFieldType<string>(F.NullTerminatedString);
 checkFieldType<string>(F.fixedLengthString(1));
 checkFieldType<string>(F.lengthPrefixedString(F.Uint8));
+
+checkFieldType<boolean>(F.Bool);

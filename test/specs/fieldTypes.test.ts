@@ -366,3 +366,8 @@ testFieldType('NullTerminatedString', [
     )],
   ]),
 ]);
+
+testFieldType('Bool', [
+  testSet('true', FieldTypes.Bool, [[true, b(1)]]),
+  testSet('false', FieldTypes.Bool, [[false, b(0)]]),
+]);
