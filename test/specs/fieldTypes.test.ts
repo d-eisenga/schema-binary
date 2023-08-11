@@ -294,3 +294,20 @@ testFieldType('Float64BE', [
   testSet('Infinity', FieldTypes.Float64BE, [[Infinity, b(127, 240, 0, 0, 0, 0, 0, 0)]]),
   testSet('-Infinity', FieldTypes.Float64BE, [[-Infinity, b(255, 240, 0, 0, 0, 0, 0, 0)]]),
 ]);
+
+testFieldType('fixedLengthBytes', [
+  testSet('1 byte', FieldTypes.fixedLengthBytes(1), [[b(1), b(1)]]),
+  testSet('2 bytes', FieldTypes.fixedLengthBytes(2), [[b(1, 2), b(1, 2)]]),
+  testSet('3 bytes', FieldTypes.fixedLengthBytes(3), [[b(1, 2, 3), b(1, 2, 3)]]),
+]);
+
+testFieldType('lengthPrefixedBytes', [
+  testSet('0 bytes', FieldTypes.lengthPrefixedBytes(FieldTypes.Uint8), [[b(), b(0)]]),
+  testSet('1 byte', FieldTypes.lengthPrefixedBytes(FieldTypes.Uint8), [[b(123), b(1, 123)]]),
+  testSet('2 bytes', FieldTypes.lengthPrefixedBytes(FieldTypes.Uint8), [
+    [b(123, 234), b(2, 123, 234)],
+  ]),
+  testSet('3 bytes', FieldTypes.lengthPrefixedBytes(FieldTypes.Uint8), [
+    [b(123, 234, 45), b(3, 123, 234, 45)],
+  ]),
+]);

@@ -29,3 +29,6 @@ checkFieldType<number>(F.Float32LE);
 checkFieldType<number>(F.Float32BE);
 checkFieldType<number>(F.Float64LE);
 checkFieldType<number>(F.Float64BE);
+
+checkFieldType<Uint8Array>(F.fixedLengthBytes(1));
+checkFieldType<Uint8Array>(F.lengthPrefixedBytes(F.Uint8));

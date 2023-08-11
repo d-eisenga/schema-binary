@@ -224,3 +224,33 @@ export const Float64BE: FieldType<number> = {
   },
   schema: S.number,
 };
+
+export const fixedLengthBytes = (
+  length: number
+): FieldType<Uint8Array> => ({
+  read: reader => {
+    const value = reader.arr.slice(reader.pos, reader.pos + length);
+    reader.pos += length;
+    return value;
+  },
+  write: (writer, value) => {
+    Writer.push(writer, value);
+  },
+  schema: S.instanceOf(Uint8Array),
+});
+
+export const lengthPrefixedBytes = (
+  lengthField: FieldType<number>
+): FieldType<Uint8Array> => ({
+  read: reader => {
+    const length = lengthField.read(reader);
+    const value = reader.arr.slice(reader.pos, reader.pos + length);
+    reader.pos += length;
+    return value;
+  },
+  write: (writer, value) => {
+    lengthField.write(writer, value.length);
+    Writer.push(writer, value);
+  },
+  schema: S.instanceOf(Uint8Array),
+});
