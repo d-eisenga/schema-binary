@@ -24,3 +24,8 @@ checkFieldType<number>(F.Int32LE);
 checkFieldType<number>(F.Int32BE);
 checkFieldType<bigint>(F.Int64LE);
 checkFieldType<bigint>(F.Int64BE);
+
+checkFieldType<number>(F.Float32LE);
+checkFieldType<number>(F.Float32BE);
+checkFieldType<number>(F.Float64LE);
+checkFieldType<number>(F.Float64BE);

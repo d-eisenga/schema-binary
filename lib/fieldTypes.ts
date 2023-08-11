@@ -176,3 +176,51 @@ export const Int64BE: FieldType<bigint> = {
   },
   schema: S.bigint.pipe(S.betweenBigint(constants.INT64_MIN, constants.INT64_MAX)),
 };
+
+export const Float32LE: FieldType<number> = {
+  read: reader => {
+    const value = reader.view.getFloat32(reader.pos, true);
+    reader.pos += 4;
+    return value;
+  },
+  write: (writer, value) => {
+    Writer.push(writer, Encode.encodeFloat32(value, true));
+  },
+  schema: S.number,
+};
+
+export const Float32BE: FieldType<number> = {
+  read: reader => {
+    const value = reader.view.getFloat32(reader.pos, false);
+    reader.pos += 4;
+    return value;
+  },
+  write: (writer, value) => {
+    Writer.push(writer, Encode.encodeFloat32(value, false));
+  },
+  schema: S.number,
+};
+
+export const Float64LE: FieldType<number> = {
+  read: reader => {
+    const value = reader.view.getFloat64(reader.pos, true);
+    reader.pos += 8;
+    return value;
+  },
+  write: (writer, value) => {
+    Writer.push(writer, Encode.encodeFloat64(value, true));
+  },
+  schema: S.number,
+};
+
+export const Float64BE: FieldType<number> = {
+  read: reader => {
+    const value = reader.view.getFloat64(reader.pos, false);
+    reader.pos += 8;
+    return value;
+  },
+  write: (writer, value) => {
+    Writer.push(writer, Encode.encodeFloat64(value, false));
+  },
+  schema: S.number,
+};

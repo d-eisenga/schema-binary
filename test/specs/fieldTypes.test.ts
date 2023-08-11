@@ -202,3 +202,95 @@ testFieldType('Int64BE', [
     [-9223372036854775808n, b(128, 0, 0, 0, 0, 0, 0, 0)],
   ]),
 ]);
+
+testFieldType('Float32LE', [
+  testSet('0', FieldTypes.Float32LE, [[0, b(0, 0, 0, 0)]]),
+  testSet('-0', FieldTypes.Float32LE, [[-0, b(0, 0, 0, 128)]]),
+  testSet('1', FieldTypes.Float32LE, [[1, b(0, 0, 128, 63)]]),
+  testSet('-1', FieldTypes.Float32LE, [[-1, b(0, 0, 128, 191)]]),
+  testSet('1.5', FieldTypes.Float32LE, [[1.5, b(0, 0, 192, 63)]]),
+  testSet('-1.5', FieldTypes.Float32LE, [[-1.5, b(0, 0, 192, 191)]]),
+  testSet('3.4028234663852886e+38', FieldTypes.Float32LE, [
+    [3.4028234663852886e+38, b(255, 255, 127, 127)],
+  ]),
+  testSet('-3.4028234663852886e+38', FieldTypes.Float32LE, [
+    [-3.4028234663852886e+38, b(255, 255, 127, 255)],
+  ]),
+  testSet('1.401298464324817e-45', FieldTypes.Float32LE, [[1.401298464324817e-45, b(1, 0, 0, 0)]]),
+  testSet('-1.401298464324817e-45', FieldTypes.Float32LE, [
+    [-1.401298464324817e-45, b(1, 0, 0, 128)],
+  ]),
+  testSet('NaN', FieldTypes.Float32LE, [[NaN, b(0, 0, 192, 127)]]),
+  testSet('Infinity', FieldTypes.Float32LE, [[Infinity, b(0, 0, 128, 127)]]),
+  testSet('-Infinity', FieldTypes.Float32LE, [[-Infinity, b(0, 0, 128, 255)]]),
+]);
+
+testFieldType('Float32BE', [
+  testSet('0', FieldTypes.Float32BE, [[0, b(0, 0, 0, 0)]]),
+  testSet('-0', FieldTypes.Float32BE, [[-0, b(128, 0, 0, 0)]]),
+  testSet('1', FieldTypes.Float32BE, [[1, b(63, 128, 0, 0)]]),
+  testSet('-1', FieldTypes.Float32BE, [[-1, b(191, 128, 0, 0)]]),
+  testSet('1.5', FieldTypes.Float32BE, [[1.5, b(63, 192, 0, 0)]]),
+  testSet('-1.5', FieldTypes.Float32BE, [[-1.5, b(191, 192, 0, 0)]]),
+  testSet('3.4028234663852886e+38', FieldTypes.Float32BE, [
+    [3.4028234663852886e+38, b(127, 127, 255, 255)],
+  ]),
+  testSet('-3.4028234663852886e+38', FieldTypes.Float32BE, [
+    [-3.4028234663852886e+38, b(255, 127, 255, 255)],
+  ]),
+  testSet('1.401298464324817e-45', FieldTypes.Float32BE, [[1.401298464324817e-45, b(0, 0, 0, 1)]]),
+  testSet('-1.401298464324817e-45', FieldTypes.Float32BE, [
+    [-1.401298464324817e-45, b(128, 0, 0, 1)],
+  ]),
+  testSet('NaN', FieldTypes.Float32BE, [[NaN, b(127, 192, 0, 0)]]),
+  testSet('Infinity', FieldTypes.Float32BE, [[Infinity, b(127, 128, 0, 0)]]),
+  testSet('-Infinity', FieldTypes.Float32BE, [[-Infinity, b(255, 128, 0, 0)]]),
+]);
+
+testFieldType('Float64LE', [
+  testSet('0', FieldTypes.Float64LE, [[0, b(0, 0, 0, 0, 0, 0, 0, 0)]]),
+  testSet('-0', FieldTypes.Float64LE, [[-0, b(0, 0, 0, 0, 0, 0, 0, 128)]]),
+  testSet('1', FieldTypes.Float64LE, [[1, b(0, 0, 0, 0, 0, 0, 240, 63)]]),
+  testSet('-1', FieldTypes.Float64LE, [[-1, b(0, 0, 0, 0, 0, 0, 240, 191)]]),
+  testSet('1.5', FieldTypes.Float64LE, [[1.5, b(0, 0, 0, 0, 0, 0, 248, 63)]]),
+  testSet('-1.5', FieldTypes.Float64LE, [[-1.5, b(0, 0, 0, 0, 0, 0, 248, 191)]]),
+  testSet('1.7976931348623157e+308', FieldTypes.Float64LE, [
+    [1.7976931348623157e+308, b(255, 255, 255, 255, 255, 255, 239, 127)],
+  ]),
+  testSet('-1.7976931348623157e+308', FieldTypes.Float64LE, [
+    [-1.7976931348623157e+308, b(255, 255, 255, 255, 255, 255, 239, 255)],
+  ]),
+  testSet('4.9406564584124654e-324', FieldTypes.Float64LE, [
+    [4.9406564584124654e-324, b(1, 0, 0, 0, 0, 0, 0, 0)],
+  ]),
+  testSet('-4.9406564584124654e-324', FieldTypes.Float64LE, [
+    [-4.9406564584124654e-324, b(1, 0, 0, 0, 0, 0, 0, 128)],
+  ]),
+  testSet('NaN', FieldTypes.Float64LE, [[NaN, b(0, 0, 0, 0, 0, 0, 248, 127)]]),
+  testSet('Infinity', FieldTypes.Float64LE, [[Infinity, b(0, 0, 0, 0, 0, 0, 240, 127)]]),
+  testSet('-Infinity', FieldTypes.Float64LE, [[-Infinity, b(0, 0, 0, 0, 0, 0, 240, 255)]]),
+]);
+
+testFieldType('Float64BE', [
+  testSet('0', FieldTypes.Float64BE, [[0, b(0, 0, 0, 0, 0, 0, 0, 0)]]),
+  testSet('-0', FieldTypes.Float64BE, [[-0, b(128, 0, 0, 0, 0, 0, 0, 0)]]),
+  testSet('1', FieldTypes.Float64BE, [[1, b(63, 240, 0, 0, 0, 0, 0, 0)]]),
+  testSet('-1', FieldTypes.Float64BE, [[-1, b(191, 240, 0, 0, 0, 0, 0, 0)]]),
+  testSet('1.5', FieldTypes.Float64BE, [[1.5, b(63, 248, 0, 0, 0, 0, 0, 0)]]),
+  testSet('-1.5', FieldTypes.Float64BE, [[-1.5, b(191, 248, 0, 0, 0, 0, 0, 0)]]),
+  testSet('1.7976931348623157e+308', FieldTypes.Float64BE, [
+    [1.7976931348623157e+308, b(127, 239, 255, 255, 255, 255, 255, 255)],
+  ]),
+  testSet('-1.7976931348623157e+308', FieldTypes.Float64BE, [
+    [-1.7976931348623157e+308, b(255, 239, 255, 255, 255, 255, 255, 255)],
+  ]),
+  testSet('4.9406564584124654e-324', FieldTypes.Float64BE, [
+    [4.9406564584124654e-324, b(0, 0, 0, 0, 0, 0, 0, 1)],
+  ]),
+  testSet('-4.9406564584124654e-324', FieldTypes.Float64BE, [
+    [-4.9406564584124654e-324, b(128, 0, 0, 0, 0, 0, 0, 1)],
+  ]),
+  testSet('NaN', FieldTypes.Float64BE, [[NaN, b(127, 248, 0, 0, 0, 0, 0, 0)]]),
+  testSet('Infinity', FieldTypes.Float64BE, [[Infinity, b(127, 240, 0, 0, 0, 0, 0, 0)]]),
+  testSet('-Infinity', FieldTypes.Float64BE, [[-Infinity, b(255, 240, 0, 0, 0, 0, 0, 0)]]),
+]);

@@ -41,3 +41,13 @@ export const encodeInt64 = (value: bigint, littleEndian: boolean) => {
   view.setBigInt64(0, value, littleEndian);
   return arr.slice(0, 8);
 };
+
+export const encodeFloat32 = (value: number, littleEndian: boolean) => {
+  view.setFloat32(0, value, littleEndian);
+  return arr.slice(0, 4);
+};
+
+export const encodeFloat64 = (value: number, littleEndian: boolean) => {
+  view.setFloat64(0, value, littleEndian);
+  return arr.slice(0, 8);
+};
