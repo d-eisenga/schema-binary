@@ -4,8 +4,9 @@
   "scripts": {
     "test:unit": "node scripts/test.mjs",
     "test:types": "tsc --noEmit",
+    "test:dts": "tsd -t lib/fieldTypes.ts -f test/typeDefs.ts",
     "test:lint": "eslint .",
-    "test": "npm run test:unit && npm run test:types && npm run test:lint"
+    "test": "npm run test:unit && npm run test:types && npm run test:dts && npm run test:lint"
   },
   "license": "UNLICENSED",
   "devDependencies": {
