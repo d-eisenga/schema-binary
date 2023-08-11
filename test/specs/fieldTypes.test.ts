@@ -138,3 +138,67 @@ testFieldType('Uint64BE', [
     [18446744073709551615n, b(255, 255, 255, 255, 255, 255, 255, 255)],
   ]),
 ]);
+
+testFieldType('Int8', [
+  testSet('0', FieldTypes.Int8, [[0, b(0)]]),
+  testSet('1', FieldTypes.Int8, [[1, b(1)]]),
+  testSet('-1', FieldTypes.Int8, [[-1, b(255)]]),
+  testSet('127', FieldTypes.Int8, [[127, b(127)]]),
+  testSet('-128', FieldTypes.Int8, [[-128, b(128)]]),
+]);
+
+testFieldType('Int16LE', [
+  testSet('0', FieldTypes.Int16LE, [[0, b(0, 0)]]),
+  testSet('1', FieldTypes.Int16LE, [[1, b(1, 0)]]),
+  testSet('-1', FieldTypes.Int16LE, [[-1, b(255, 255)]]),
+  testSet('32767', FieldTypes.Int16LE, [[32767, b(255, 127)]]),
+  testSet('-32768', FieldTypes.Int16LE, [[-32768, b(0, 128)]]),
+]);
+
+testFieldType('Int16BE', [
+  testSet('0', FieldTypes.Int16BE, [[0, b(0, 0)]]),
+  testSet('1', FieldTypes.Int16BE, [[1, b(0, 1)]]),
+  testSet('-1', FieldTypes.Int16BE, [[-1, b(255, 255)]]),
+  testSet('32767', FieldTypes.Int16BE, [[32767, b(127, 255)]]),
+  testSet('-32768', FieldTypes.Int16BE, [[-32768, b(128, 0)]]),
+]);
+
+testFieldType('Int32LE', [
+  testSet('0', FieldTypes.Int32LE, [[0, b(0, 0, 0, 0)]]),
+  testSet('1', FieldTypes.Int32LE, [[1, b(1, 0, 0, 0)]]),
+  testSet('-1', FieldTypes.Int32LE, [[-1, b(255, 255, 255, 255)]]),
+  testSet('2147483647', FieldTypes.Int32LE, [[2147483647, b(255, 255, 255, 127)]]),
+  testSet('-2147483648', FieldTypes.Int32LE, [[-2147483648, b(0, 0, 0, 128)]]),
+]);
+
+testFieldType('Int32BE', [
+  testSet('0', FieldTypes.Int32BE, [[0, b(0, 0, 0, 0)]]),
+  testSet('1', FieldTypes.Int32BE, [[1, b(0, 0, 0, 1)]]),
+  testSet('-1', FieldTypes.Int32BE, [[-1, b(255, 255, 255, 255)]]),
+  testSet('2147483647', FieldTypes.Int32BE, [[2147483647, b(127, 255, 255, 255)]]),
+  testSet('-2147483648', FieldTypes.Int32BE, [[-2147483648, b(128, 0, 0, 0)]]),
+]);
+
+testFieldType('Int64LE', [
+  testSet('0', FieldTypes.Int64LE, [[0n, b(0, 0, 0, 0, 0, 0, 0, 0)]]),
+  testSet('1', FieldTypes.Int64LE, [[1n, b(1, 0, 0, 0, 0, 0, 0, 0)]]),
+  testSet('-1', FieldTypes.Int64LE, [[-1n, b(255, 255, 255, 255, 255, 255, 255, 255)]]),
+  testSet('9223372036854775807', FieldTypes.Int64LE, [
+    [9223372036854775807n, b(255, 255, 255, 255, 255, 255, 255, 127)],
+  ]),
+  testSet('-9223372036854775808', FieldTypes.Int64LE, [
+    [-9223372036854775808n, b(0, 0, 0, 0, 0, 0, 0, 128)],
+  ]),
+]);
+
+testFieldType('Int64BE', [
+  testSet('0', FieldTypes.Int64BE, [[0n, b(0, 0, 0, 0, 0, 0, 0, 0)]]),
+  testSet('1', FieldTypes.Int64BE, [[1n, b(0, 0, 0, 0, 0, 0, 0, 1)]]),
+  testSet('-1', FieldTypes.Int64BE, [[-1n, b(255, 255, 255, 255, 255, 255, 255, 255)]]),
+  testSet('9223372036854775807', FieldTypes.Int64BE, [
+    [9223372036854775807n, b(127, 255, 255, 255, 255, 255, 255, 255)],
+  ]),
+  testSet('-9223372036854775808', FieldTypes.Int64BE, [
+    [-9223372036854775808n, b(128, 0, 0, 0, 0, 0, 0, 0)],
+  ]),
+]);

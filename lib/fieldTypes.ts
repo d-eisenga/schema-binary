@@ -92,3 +92,87 @@ export const Uint64BE: FieldType<bigint> = {
   },
   schema: bigUint.pipe(S.lessThanBigint(constants.UINT64_MAX + 1n)),
 };
+
+export const Int8: FieldType<number> = {
+  read: reader => {
+    const value = reader.view.getInt8(reader.pos);
+    reader.pos += 1;
+    return value;
+  },
+  write: (writer, value) => {
+    Writer.push(writer, Encode.encodeInt8(value));
+  },
+  schema: int.pipe(S.between(constants.INT8_MIN, constants.INT8_MAX)),
+};
+
+export const Int16LE: FieldType<number> = {
+  read: reader => {
+    const value = reader.view.getInt16(reader.pos, true);
+    reader.pos += 2;
+    return value;
+  },
+  write: (writer, value) => {
+    Writer.push(writer, Encode.encodeInt16(value, true));
+  },
+  schema: int.pipe(S.between(constants.INT16_MIN, constants.INT16_MAX)),
+};
+
+export const Int16BE: FieldType<number> = {
+  read: reader => {
+    const value = reader.view.getInt16(reader.pos, false);
+    reader.pos += 2;
+    return value;
+  },
+  write: (writer, value) => {
+    Writer.push(writer, Encode.encodeInt16(value, false));
+  },
+  schema: int.pipe(S.between(constants.INT16_MIN, constants.INT16_MAX)),
+};
+
+export const Int32LE: FieldType<number> = {
+  read: reader => {
+    const value = reader.view.getInt32(reader.pos, true);
+    reader.pos += 4;
+    return value;
+  },
+  write: (writer, value) => {
+    Writer.push(writer, Encode.encodeInt32(value, true));
+  },
+  schema: int.pipe(S.between(constants.INT32_MIN, constants.INT32_MAX)),
+};
+
+export const Int32BE: FieldType<number> = {
+  read: reader => {
+    const value = reader.view.getInt32(reader.pos, false);
+    reader.pos += 4;
+    return value;
+  },
+  write: (writer, value) => {
+    Writer.push(writer, Encode.encodeInt32(value, false));
+  },
+  schema: int.pipe(S.between(constants.INT32_MIN, constants.INT32_MAX)),
+};
+
+export const Int64LE: FieldType<bigint> = {
+  read: reader => {
+    const value = reader.view.getBigInt64(reader.pos, true);
+    reader.pos += 8;
+    return value;
+  },
+  write: (writer, value) => {
+    Writer.push(writer, Encode.encodeInt64(value, true));
+  },
+  schema: S.bigint.pipe(S.betweenBigint(constants.INT64_MIN, constants.INT64_MAX)),
+};
+
+export const Int64BE: FieldType<bigint> = {
+  read: reader => {
+    const value = reader.view.getBigInt64(reader.pos, false);
+    reader.pos += 8;
+    return value;
+  },
+  write: (writer, value) => {
+    Writer.push(writer, Encode.encodeInt64(value, false));
+  },
+  schema: S.bigint.pipe(S.betweenBigint(constants.INT64_MIN, constants.INT64_MAX)),
+};

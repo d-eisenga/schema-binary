@@ -16,3 +16,11 @@ checkFieldType<number>(F.Uint32LE);
 checkFieldType<number>(F.Uint32BE);
 checkFieldType<bigint>(F.Uint64LE);
 checkFieldType<bigint>(F.Uint64BE);
+
+checkFieldType<number>(F.Int8);
+checkFieldType<number>(F.Int16LE);
+checkFieldType<number>(F.Int16BE);
+checkFieldType<number>(F.Int32LE);
+checkFieldType<number>(F.Int32BE);
+checkFieldType<bigint>(F.Int64LE);
+checkFieldType<bigint>(F.Int64BE);
