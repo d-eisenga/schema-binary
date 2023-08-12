@@ -476,3 +476,37 @@ export const tuple = <A extends TupleDef>(
   },
   schema: S.tuple(...fields.map(field => field.schema)) as S.Schema<TupleInner<A>>,
 });
+
+export const reference = (
+  field: FieldType<number>
+): [FieldType<number>, <A>(field: FieldType<A>) => FieldType<A>] => {
+  let refIndex: number | null = null;
+  const refField: FieldType<number> = {
+    read: field.read,
+    write: writer => {
+      if (refIndex === null) {
+        refIndex = writer.chunks.length;
+        field.write(writer, 0);
+      }
+    },
+    schema: field.schema,
+  };
+
+  const targetField = <A>(innerField: FieldType<A>): FieldType<A> => ({
+    read: innerField.read,
+    write: (writer, value) => {
+      if (refIndex !== null) {
+        const restChunks = writer.chunks.slice(refIndex + 1);
+        const length = writer.length;
+        writer.chunks = writer.chunks.slice(0, refIndex);
+        field.write(writer, length);
+        writer.chunks.push(...restChunks);
+        writer.length = length;
+        innerField.write(writer, value);
+      }
+    },
+    schema: innerField.schema,
+  });
+
+  return [refField, targetField];
+};

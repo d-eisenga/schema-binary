@@ -4,7 +4,7 @@ import * as O from '@effect/data/Option';
 import * as S from '@effect/schema/Schema';
 import * as FieldTypes from '../../lib/fieldTypes';
 import * as Reader from '../../lib/Reader';
-import {FieldType} from '../../lib/types';
+import {FieldType, FieldTypeInner} from '../../lib/types';
 import * as Writer from '../../lib/Writer';
 import {b} from '../utils';
 
@@ -574,3 +574,46 @@ testFieldType('tuple', [
     [['Hello :)', -128, false], b(72, 101, 108, 108, 111, 32, 58, 41, 0, 128, 0)],
   ]),
 ]);
+
+Test.test('reference', async ctx => {
+  const [ref, target] = FieldTypes.reference(FieldTypes.Uint8);
+  const struct = FieldTypes.struct([
+    ['foo', FieldTypes.NullTerminatedString],
+    ['quxRef', ref],
+    ['bar', FieldTypes.NullTerminatedString],
+    ['qux', target(FieldTypes.Uint32LE)],
+    ['quux', FieldTypes.NullTerminatedString],
+  ] as const);
+  type Struct = FieldTypeInner<typeof struct>;
+
+  const input: Struct = {
+    foo: 'abc',
+    quxRef: 0,  // Placeholder value, will be overwritten by the position of the boolean
+    bar: 'def',
+    qux: 12345,
+    quux: 'ghi',
+  };
+
+  const encoded = b(
+    97, 98, 99, 0,    // 'abc' + null terminator
+    12,               // Position of referenced boolean (+3 because of the padding in testRead)
+    100, 101, 102, 0, // 'def' + null terminator
+    57, 48, 0, 0,     // 12345 as Uint32LE
+    103, 104, 105, 0  // 'ghi' + null terminator
+  );
+
+  const decoded: Struct = {
+    foo: 'abc',
+    quxRef: 12,
+    bar: 'def',
+    qux: 12345,
+    quux: 'ghi',
+  };
+
+  await ctx.test('Write a reference to a uint32', () => {
+    testWrite(struct, [input, encoded]);
+  });
+  await ctx.test('Read a reference to a uint32', () => {
+    testRead(struct, [decoded, encoded]);
+  });
+});
