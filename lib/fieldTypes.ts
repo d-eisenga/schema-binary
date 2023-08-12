@@ -451,3 +451,28 @@ export const union = (
   },
   schema: S.union(...fields.map(([field]) => field.schema)),
 });
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type TupleDef = readonly [...FieldType<any>[]];
+
+type TupleInner<A extends TupleDef> = Readonly<{
+  [K in keyof A]: FieldTypeInner<A[K]>;
+}>;
+
+export const tuple = <A extends TupleDef>(
+  ...fields: A
+): FieldType<TupleInner<A>> => ({
+  read: reader => {
+    const result: unknown[] = [];
+    for (const field of fields) {
+      result.push(field.read(reader));
+    }
+    return result as TupleInner<A>;
+  },
+  write: (writer, value) => {
+    for (let i = 0; i < fields.length; i++) {
+      fields[i].write(writer, value[i]);
+    }
+  },
+  schema: S.tuple(...fields.map(field => field.schema)) as S.Schema<TupleInner<A>>,
+});

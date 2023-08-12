@@ -75,3 +75,5 @@ checkFieldType<'foo' | number>(F.union(F.Uint8)([
   [F.literal(F.NullTerminatedString)('foo'), x => x === 'foo'],
   [F.Uint8, x => typeof x === 'number'],
 ]));
+
+checkFieldType<readonly [number, boolean]>(F.tuple(F.Uint8, F.Bool));

@@ -563,3 +563,14 @@ testFieldType('union', [
     [{tag: 'bar', b: 123}, b(1, 98, 97, 114, 123)],
   ]),
 ]);
+
+testFieldType('tuple', [
+  testSet('[string, number, boolean]', FieldTypes.tuple(
+    FieldTypes.NullTerminatedString,
+    FieldTypes.Int8,
+    FieldTypes.Bool
+  ), [
+    [['abc', 123, true], b(97, 98, 99, 0, 123, 1)],
+    [['Hello :)', -128, false], b(72, 101, 108, 108, 111, 32, 58, 41, 0, 128, 0)],
+  ]),
+]);
