@@ -533,3 +533,33 @@ testFieldType('literal', [
     [12345, b(48, 57)],
   ]),
 ]);
+
+testFieldType('union', [
+  testSet('a string or number', FieldTypes.union(FieldTypes.Uint8)([
+    [FieldTypes.NullTerminatedString, v => typeof v === 'string'],
+    [FieldTypes.Uint8, v => typeof v === 'number'],
+  ]), [
+    ['abc', b(0, 97, 98, 99, 0)],
+    [123, b(1, 123)],
+  ]),
+  testSet('a uint8 or uint16', FieldTypes.union(FieldTypes.Uint8)([
+    [FieldTypes.Uint8, v => typeof v === 'number' && v < 256],
+    [FieldTypes.Uint16LE, v => typeof v === 'number' && v >= 256],
+  ]), [
+    [123, b(0, 123)],
+    [456, b(1, 200, 1)],
+  ]),
+  testSet('a union of tagged structs', FieldTypes.union(FieldTypes.Uint8)([
+    [FieldTypes.struct([
+      ['tag', FieldTypes.literal(FieldTypes.fixedLengthString(3))('foo')],
+      ['a', FieldTypes.Uint8],
+    ] as const), x => x.tag === 'foo'],
+    [FieldTypes.struct([
+      ['tag', FieldTypes.literal(FieldTypes.fixedLengthString(3))('bar')],
+      ['b', FieldTypes.Uint8],
+    ] as const), x => x.tag === 'bar'],
+  ]), [
+    [{tag: 'foo', a: 123}, b(0, 102, 111, 111, 123)],
+    [{tag: 'bar', b: 123}, b(1, 98, 97, 114, 123)],
+  ]),
+]);

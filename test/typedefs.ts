@@ -70,3 +70,8 @@ checkFieldType<Struct>(F.struct([
 
 checkFieldType<'Foo'>(F.literal(F.NullTerminatedString)('Foo'));
 checkFieldType<123>(F.literal(F.Uint8)(123));
+
+checkFieldType<'foo' | number>(F.union(F.Uint8)([
+  [F.literal(F.NullTerminatedString)('foo'), x => x === 'foo'],
+  [F.Uint8, x => typeof x === 'number'],
+]));

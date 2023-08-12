@@ -424,3 +424,30 @@ export const literal = <A extends string | number | boolean | null | bigint>(
   write: field.write,
   schema: S.literal(value),
 });
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type UnionOption<A = any> = readonly [fieldType: FieldType<A>, is: (value: any) => boolean];
+
+export type UnionOptions = readonly [...UnionOption[]];
+
+export const union = (
+  indexField: FieldType<number>
+) => <A extends UnionOptions>(
+  fields: A
+): FieldType<FieldTypeInner<A[number][0]>> => ({
+  read: reader => {
+    const index = indexField.read(reader);
+    return fields[index][0].read(reader);
+  },
+  write: (writer, value) => {
+    for (let i = 0; i < fields.length; i++) {
+      const [field, is] = fields[i];
+      if (is(value)) {
+        indexField.write(writer, i);
+        field.write(writer, value);
+        return;
+      }
+    }
+  },
+  schema: S.union(...fields.map(([field]) => field.schema)),
+});
