@@ -59,9 +59,14 @@ type Struct = {
   foo: string,
   bar: number,
   baz: boolean,
+  qux: 'qux',
 };
 checkFieldType<Struct>(F.struct([
   ['foo', F.NullTerminatedString],
   ['bar', F.Uint8],
   ['baz', F.Bool],
+  ['qux', F.literal(F.NullTerminatedString)('qux')],
 ] as const));
+
+checkFieldType<'Foo'>(F.literal(F.NullTerminatedString)('Foo'));
+checkFieldType<123>(F.literal(F.Uint8)(123));

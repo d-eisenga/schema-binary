@@ -414,3 +414,13 @@ export const struct = <A extends StructEntries>(
     )
   ) as unknown as S.Schema<StructFromEntries<A>>,
 });
+
+export const literal = <A extends string | number | boolean | null | bigint>(
+  field: FieldType<A>
+) => <B extends A>(
+  value: B
+): FieldType<B> => ({
+  read: reader => field.read(reader) as B,
+  write: field.write,
+  schema: S.literal(value),
+});

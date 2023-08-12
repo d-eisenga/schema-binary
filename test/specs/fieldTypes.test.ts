@@ -524,3 +524,12 @@ testFieldType('struct', [
     [{foo: {a: false, b: true}, bar: {one: -1, two: -2}}, b(0, 1, 255, 254)],
   ]),
 ]);
+
+testFieldType('literal', [
+  testSet('a literal string', FieldTypes.literal(FieldTypes.fixedLengthString(3))('abc'), [
+    ['abc', b(97, 98, 99)],
+  ]),
+  testSet('a literal number', FieldTypes.literal(FieldTypes.Uint16BE)(12345), [
+    [12345, b(48, 57)],
+  ]),
+]);
